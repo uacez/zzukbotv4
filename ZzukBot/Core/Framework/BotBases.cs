@@ -52,29 +52,11 @@ namespace ZzukBot.Core.Framework
             Action<string> load = item =>
             {
                 if (!item.EndsWith(".dll")) return;
-                // $"BotBases: Noting down {item} as possible botbase".Log(Logs.Injected, true);
-                // var dir = Path.GetDirectoryName(item);
-                // DependencyLoader.SetPluginPath(dir);
-                // var assembly = Assembly.Load(File.ReadAllBytes(item));
-                // _catalog.Catalogs.Add(new AssemblyCatalog(assembly));
-                try
-                {
-                    $"BotBases: Noting down {item} as possible botbase".Log(Logs.Injected, true);
-                    var dir = Path.GetDirectoryName(item);
-                    DependencyLoader.SetPluginPath(dir);
-                    var assembly = Assembly.Load(File.ReadAllBytes(item));
-                    _catalog.Catalogs.Add(new AssemblyCatalog(assembly));
-                }
-                catch (BadImageFormatException ex)
-                {
-                    $"BotBases: Failed to load {item} - Invalid assembly format: {ex.Message}".Log(Logs.Injected, true);
-                    // Skip this invalid assembly
-                }
-                catch (Exception ex)
-                {
-                    $"BotBases: Failed to load {item} - {ex.Message}".Log(Logs.Injected, true);
-                    // Skip this problematic assembly
-                }
+                $"BotBases: Noting down {item} as possible botbase".Log(Logs.Injected, true);
+                var dir = Path.GetDirectoryName(item);
+                DependencyLoader.SetPluginPath(dir);
+                var assembly = Assembly.Load(File.ReadAllBytes(item));
+                _catalog.Catalogs.Add(new AssemblyCatalog(assembly));
             };
             foreach (var path in Directory.EnumerateDirectories(Paths.BotBases, "*", SearchOption.TopDirectoryOnly))
             foreach (var item in Directory.GetFiles(path))

@@ -52,7 +52,7 @@ jobs:
       run: nuget restore ZzukBot.sln
 
     - name: Build solution with VS2019
-      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="x86" /p:VisualStudioVersion=16.0
+      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="Any CPU" /p:VisualStudioVersion=16.0
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
