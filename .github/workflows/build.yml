@@ -1,0 +1,39 @@
+name: Build ZzukBot
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:  # 支持手动触发
+    inputs:
+      build_reason:
+        description: 'Build reason (optional)'
+        required: false
+        default: 'Manual build'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4  # 更新到v4版本
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2  # 更新到v2版本
+
+    - name: Restore NuGet packages
+      run: nuget restore ZzukBot.sln
+
+    - name: Build solution
+      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4  # 更新到v4版本
+      with:
+        name: ZzukBot-Build
+        path: Release/Internal/
+        retention-days: 30  # 设置保留天数
