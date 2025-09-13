@@ -19,6 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4  # 更新到v4版本
 
+    - name: Install .NET Framework 4.6.1 Developer Pack
+      run: |
+        # 下载并安装.NET Framework 4.6.1 Developer Pack
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-DevPack-KB3105179-ENU.exe" -OutFile "ndp461-devpack.exe"
+        Start-Process -FilePath "ndp461-devpack.exe" -ArgumentList "/install", "/quiet", "/norestart" -Wait
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
@@ -29,7 +35,7 @@ jobs:
       run: nuget restore ZzukBot.sln
 
     - name: Build solution
-      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="Any CPU"
+      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="x86"  # 改为x86平台
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4  # 更新到v4版本
