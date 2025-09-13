@@ -33,18 +33,20 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
-    # 修复 C++ 编译错误的步骤
-    - name: Fix C++ compilation errors in MoveMap.cpp
+    # 修复所有 C++ 编译错误
+    - name: Fix C++ compilation errors in all files
       run: |
-        # 修复所有字符串字面量到 char* 的转换问题
-        $filePath = "CLibs\Pathfinding\Navigation\MoveMap.cpp"
-        $content = Get-Content $filePath
-        
-        # 替换所有 char* b = "string" 为 const char* b = "string"
+        # 修复 MoveMap.cpp 中的类型转换错误
+        $moveMapPath = "CLibs\Pathfinding\Navigation\MoveMap.cpp"
+        $content = Get-Content $moveMapPath
         $content = $content -replace 'char\*\s+b\s+=\s+"', 'const char* b = "'
+        Set-Content $moveMapPath $content
         
-        # 保存修改后的文件
-        Set-Content $filePath $content
+        # 修复 dllmain.cpp 中的类型转换错误
+        $dllMainPath = "CLibs\FastCallDll\dllmain.cpp"
+        $content = Get-Content $dllMainPath
+        $content = $content -replace 'f\(code, "Zzuk"\);', 'char temp[5] = "Zzuk"; f(code, temp);'
+        Set-Content $dllMainPath $content
 
     - name: Restore NuGet packages
       run: nuget restore ZzukBot.sln
