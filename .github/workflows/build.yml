@@ -17,29 +17,28 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4  # 更新到v4版本
+    - uses: actions/checkout@v4
 
-    - name: Install .NET Framework 4.6.1 Developer Pack
+    - name: Install .NET Framework 4.6.1 Developer Pack via Chocolatey
       run: |
-        # 下载并安装.NET Framework 4.6.1 Developer Pack
-        Invoke-WebRequest -Uri "https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-DevPack-KB3105179-ENU.exe" -OutFile "ndp461-devpack.exe"
-        Start-Process -FilePath "ndp461-devpack.exe" -ArgumentList "/install", "/quiet", "/norestart" -Wait
+        # 使用 Chocolatey 安装 .NET Framework 4.6.1 Developer Pack
+        choco install dotnet4.6.1-devpack -y
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2  # 更新到v2版本
+      uses: NuGet/setup-nuget@v2
 
     - name: Restore NuGet packages
       run: nuget restore ZzukBot.sln
 
     - name: Build solution
-      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="x86"  # 改为x86平台
+      run: msbuild ZzukBot.sln /p:Configuration=Release /p:Platform="x86"
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4  # 更新到v4版本
+      uses: actions/upload-artifact@v4
       with:
         name: ZzukBot-Build
         path: Release/Internal/
-        retention-days: 30  # 设置保留天数
+        retention-days: 30
